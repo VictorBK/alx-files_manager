@@ -1,5 +1,5 @@
 import redis from 'redis';
-import { promisify } from 'util';
+import {  promisify } from 'util';
 
 class RedisClient {
   constructor() {
@@ -10,9 +10,9 @@ class RedisClient {
       console.log(`Redis client not connected due to: ${error.message}`);
       this.connected = false;
     });
- }
+  }
 
- isAlive() {
+  isAlive() {
     return this.connected;
   }
 
