@@ -1,22 +1,21 @@
-import redisClient from '../utils/redis';
-import dbClient from '../utils/db';
+const Redis = require('../utils/redis');
+const DB = require('../utils/db');
 
 class AppController {
-  static getStatus(_req, res) {
-    const json = {
-      redis: redisClient.isAlive(),
-      db: dbClient.isAlive(),
-    };
-    res.status(200).send(json);
+  static getStatus(req, res) {
+    if (Redis.isAlive() && DB.isAlive()) {
+      return res.status(200).json({ redis: true, db: true });
+    }
+    return res.status(400).send('Redis and MongoDB not connected');
   }
 
-  static async getStats(_req, res) {
-    const json = {
-      users: await dbClient.nbUsers(),
-      files: await dbClient.nbFiles(),
-    };
-    res.status(200).send(json);
+  static getStats(req, res) {
+    (async () => {
+      const users = await DB.nbUsers();
+      const files = await DB.nbFiles();
+      return res.status(200).json({ users, files });
+    })();
   }
 }
 
-export default AppController;
+module.exports = AppController;
